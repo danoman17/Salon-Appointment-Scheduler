@@ -4,9 +4,10 @@ PSQL="psql -X --username=freecodecamp --dbname=salon --tuples-only -c"
 
 echo -e "\n~~~~~ AHSOKA'S SALON ~~~~~\n"
 
-
+# displays the menu options
 SERVICES_MENU() {
   
+  # displays initial message or parameter error message 
   if [[ $1 ]]
   then
     echo -e "\n$1"
@@ -42,18 +43,17 @@ APPOINTMENT_SCHEDULER() {
   
   if [[ -z $SERVICE_NAME_RESULT ]]
   then
-    # return to menu
+    # return to menu with the message error
     SERVICES_MENU "I could not find that service, try again."
   else
 
-    
     echo -e "\nEnter your phone number:"
     read CUSTOMER_PHONE
 
-    # we get the name of the customer using phone 
+    # we get the customer's name using his phone 
     CUSTOMER_NAME_RESULT=$($PSQL "SELECT name FROM customers WHERE phone='$CUSTOMER_PHONE'")
 
-    # if it isn't in the DB...
+    # if it isn't in the DB we ask for the user information and the appointment info
     if [[ -z $CUSTOMER_NAME_RESULT ]]
     then
 
@@ -73,8 +73,7 @@ APPOINTMENT_SCHEDULER() {
       
       echo -e "\nI have put you down for a $(echo $SERVICE_NAME_RESULT | sed -r 's/^ *| *$//g') at $SERVICE_TIME, $(echo $CUSTOMER_NAME | sed -r 's/^ *| *$//g').\n"
 
-      
-    else
+    else # if the user is in the DB we just ask for the appontment info
     
       #insert into db
       echo -e "\nWhat time would you like your appointment, $CUSTOMER_NAME_RESULT?"
@@ -93,7 +92,7 @@ APPOINTMENT_SCHEDULER() {
 
 }
 
-
+# invoke the function that displays the service options
 SERVICES_MENU
 
 
